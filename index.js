@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 const port = 5000; 
-const appDir = (process.env.NODE_ENV !== 'production')?'build':'dist'; 
+const appDir = (process.env.NODE_ENV !== 'production')?'dev':'dist'; 
 
 app.set('port', process.env.PORT || port);
 

@@ -1,9 +1,14 @@
 {
   "scripts": {
-    "dev": "set NODE_ENV=development && npx rollup -c -w",
-    "start": "set NODE_ENV=production && npx rollup -c -w"
+    "dev":"NODE_ENV=development npx rollup -c -w",
+    "build":"NODE_ENV=production npx rollup -c"
   },
-  "author": "AlbertoMata",
+  "author": "Alberto Mata",
+  "keywords": [
+    "LWC",
+    "LWC-OSS",
+    "Web Components"
+  ],
   "devDependencies": {
     "@lwc/rollup-plugin": "^2.32.0",
     "@rollup/plugin-node-resolve": "^15.0.1",

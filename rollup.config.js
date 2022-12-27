@@ -9,49 +9,52 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const dev = process.env.NODE_ENV !== 'production';
-const appDir = dev?'build':'dist'; 
+const isDevEnvironment = process.env.NODE_ENV !== 'production';
+const node_environment = isDevEnvironment?'development':'production';
+const applicationDirectory = isDevEnvironment?'dev':'dist'; 
 
-const lwcInputDir = path.resolve(__dirname, 'src/client/lwc/');
-const lwcInput = path.join(lwcInputDir, 'main.js');
-const lwcOutputDir = path.resolve(__dirname, appDir);
-const lwcOutput = {
-	file: path.join(lwcOutputDir, 'app.js'),
+const lwcInputDirectory = path.resolve(__dirname, 'src/client/lwc/');
+const lwcInputFilePath = path.join(lwcInputDirectory, 'main.js');
+const clientDirectory = path.resolve(__dirname, applicationDirectory, 'app');
+const lwcOutputDirectory = path.resolve(clientDirectory);
+const lwcOutputFilePath = {
+	file: path.join(lwcOutputDirectory, 'app.js'),
 	format: 'esm'
 };
 
-const serverInputDir = path.resolve(__dirname, 'src/server/');
-const serverInput = path.join(serverInputDir, 'index.js');
-const serverOutputDir = path.resolve(__dirname);
+const serverInputDirectory = path.resolve(__dirname, 'src/server/');
+const serverInputFilePath = path.join(serverInputDirectory, 'server.js');
+const serverOutputDirectory = path.resolve(__dirname, applicationDirectory);
 
-const serverOutput = {
-	file: path.join(serverOutputDir, 'index.js'),
+const serverOutputFilePath = {
+	file: path.join(serverOutputDirectory, 'server.js'),
 	format: 'esm'
 };
 
-const lwcConfig = {
-	input: lwcInput,
-	output: lwcOutput,
+const lwcConfiguration = {
+	input: lwcInputFilePath,
+	output: lwcOutputFilePath,
 	plugins: [
 		resolve(),
 		replace({
-			'process.env.NODE_ENV': JSON.stringify('development'),
+			'process.env.NODE_ENV': JSON.stringify(node_environment),
 			preventAssignment: true
 		}),
 		lwc(),
 		copy({
 			targets: [
-				{src: 'src/client/index.html', dest: lwcOutputDir}
+				{src: 'src/client/index.html', dest: lwcOutputDirectory},
+				{src: 'assets', dest: clientDirectory}
 			]
 		})
 	]
 };
 
 const serverConfig = {
-    external: ['express', 'path', 'url'],
-	input: serverInput,
-	output: serverOutput,
-	plugins: [dev && run()]
+	external: ['express', 'path', 'url'],
+	input: serverInputFilePath,
+	output: serverOutputFilePath,
+	plugins: [isDevEnvironment && run()]
 };
 
-export default [lwcConfig, serverConfig];
+export default [lwcConfiguration, serverConfig];
